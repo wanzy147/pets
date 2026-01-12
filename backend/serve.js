@@ -64,10 +64,17 @@ app.post('/pet/action', (req, res) => {
             return res.status(400).json({ error: "未知动作" });
     }
 
+    
+    if (petState.hunger >= 80) {
+        petState.mood = "饥饿";
+    } else if (petState.energy <= 20) {
+        petState.mood = "困倦";
+    }
+
     petState.lastUpdated = new Date().toISOString();
     addLog(action, resultText);
 
-
+    res.json({ state: petState, message: resultText });
 });
 
 // GET /pet/log - 获取日志

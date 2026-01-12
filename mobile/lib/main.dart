@@ -1,8 +1,39 @@
-// 记得在文件头部添加引用:
-import 'pet_widget.dart'; 
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'pet_provider.dart';
+import 'log_page.dart';
+import 'pet_widget.dart';
+
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => PetProvider())],
+      child: const MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Pocket Pet',
+      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
+      home: const PetHomePage(),
+    );
+  }
+}
+
+class PetHomePage extends StatefulWidget {
+  const PetHomePage({super.key});
+
+  @override
+  State<PetHomePage> createState() => _PetHomePageState();
+}
 
 class _PetHomePageState extends State<PetHomePage> {
-  // 新增：用于控制宠物的动画
   PetController? _petController;
 
   @override
@@ -13,12 +44,8 @@ class _PetHomePageState extends State<PetHomePage> {
     });
   }
 
-  // 新增：处理动作点击
   void _handleAction(String action) {
-    // 1. 触发 UI 动画 (视觉反馈)
     _petController?.triggerAction(action);
-    
-    // 2. 触发 业务逻辑 (网络请求)
     Provider.of<PetProvider>(context, listen: false).performAction(action);
   }
 
@@ -58,24 +85,17 @@ class _PetHomePageState extends State<PetHomePage> {
                     ),
                   ),
                 
-                // ------------------------------------------------
-                // 修改区域开始：使用新的 PetWidget 替换原来的 Card 文本
-                // ------------------------------------------------
                 const SizedBox(height: 20),
                 Center(
                   child: PetWidget(
-                    mood: provider.petState['mood'] ?? "开心", // 传入心情
+                    mood: provider.petState['mood'] ?? "开心",
                     onControllerCreated: (controller) {
-                      _petController = controller; // 绑定控制器
+                      _petController = controller;
                     },
                   ),
                 ),
                 const SizedBox(height: 30),
-                // ------------------------------------------------
-                // 修改区域结束
-                // ------------------------------------------------
 
-                // 状态数值卡片 (稍微简化一下显示，把图标移到了 PetWidget 里)
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
@@ -97,13 +117,11 @@ class _PetHomePageState extends State<PetHomePage> {
                 
                 const SizedBox(height: 30),
                 
-                // 动作按钮区域
                 Wrap(
                   spacing: 15,
                   runSpacing: 15,
                   alignment: WrapAlignment.center,
                   children: [
-                    // 注意：这里 onPressed 改成了 _handleAction
                     _actionButton("feed", Icons.fastfood, "喂食", Colors.orange),
                     _actionButton("play", Icons.sports_esports, "玩耍", Colors.green),
                     _actionButton("dance", Icons.music_note, "跳舞", Colors.purple),
@@ -145,16 +163,15 @@ class _PetHomePageState extends State<PetHomePage> {
 
   Widget _actionButton(String actionKey, IconData icon, String label, Color color) {
     return SizedBox(
-      width: 150, // 让按钮宽一点
+      width: 150,
       height: 50,
       child: ElevatedButton.icon(
-        // 调用我们新的处理函数
         onPressed: () => _handleAction(actionKey),
         icon: Icon(icon, color: Colors.white),
         label: Text(label, style: const TextStyle(fontSize: 16)),
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
-          foregroundColor: Colors.white, // 文字颜色
+          foregroundColor: Colors.white,
           elevation: 3,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),

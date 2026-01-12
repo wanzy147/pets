@@ -9,7 +9,7 @@ class PetProvider with ChangeNotifier {
   // 状态变量
   Map<String, dynamic> _petState = {
     "mood": "加载中...",
-    "energy": 0,
+    "energy": 100,
     "hunger": 0,
     "lastUpdated": ""
   };
@@ -54,9 +54,15 @@ class PetProvider with ChangeNotifier {
       _petState['hunger'] = (_petState['hunger'] - 20).clamp(0, 100);
       _petState['energy'] = (_petState['energy'] + 5).clamp(0, 100);
     } else if (action == 'play') {
-       _petState['energy'] = (_petState['energy'] - 15).clamp(0, 100);
+      _petState['energy'] = (_petState['energy'] - 15).clamp(0, 100);
+      _petState['hunger'] = (_petState['hunger'] + 10).clamp(0, 100);
+    } else if (action == 'dance') {
+      _petState['energy'] = (_petState['energy'] - 10).clamp(0, 100);
+      _petState['hunger'] = (_petState['hunger'] + 8).clamp(0, 100);
+    } else if (action == 'sleep') {
+      _petState['energy'] = (_petState['energy'] + 20).clamp(0, 100);
+      _petState['hunger'] = (_petState['hunger'] + 5).clamp(0, 100);
     }
-    // ... 其他动作的简单模拟
     
     notifyListeners(); // 立即刷新UI
 
@@ -84,7 +90,6 @@ class PetProvider with ChangeNotifier {
   }
   
   // 获取日志
-  // 在 pet_provider.dart 中找到 fetchLogs 并替换为：
   Future<void> fetchLogs() async {
     try {
       final response = await http.get(Uri.parse('$API_BASE_URL/pet/log'));
