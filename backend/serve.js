@@ -67,10 +67,7 @@ app.post('/pet/action', (req, res) => {
     petState.lastUpdated = new Date().toISOString();
     addLog(action, resultText);
 
-    // 模拟网络延迟（方便测试前端Loading状态）
-    setTimeout(() => {
-        res.json({ state: petState, log: logs[0] });
-    }, 500); 
+
 });
 
 // GET /pet/log - 获取日志

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'pet_provider.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart'; // 需要在 pubspec.yaml 添加 intl 依赖
 
 class LogPage extends StatefulWidget {
   const LogPage({super.key});
@@ -14,8 +14,9 @@ class _LogPageState extends State<LogPage> {
   @override
   void initState() {
     super.initState();
+    // 页面加载时获取日志
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<PetProvider>(context, listen: false).fetchLogs();
+      Provider.of<PetProvider>(context, listen: false).fetchLogs(); // 需在 Provider 中实现 fetchLogs
     });
   }
 
