@@ -65,10 +65,12 @@ app.post('/pet/action', (req, res) => {
     }
 
     
-    if (petState.hunger >= 80) {
+    if (petState.energy == 100 && petState.hunger == 0) {
+        petState.mood = "充满活力";
+    } else if (petState.hunger >= 80) {
         petState.mood = "饥饿";
     } else if (petState.energy <= 20) {
-        petState.mood = "困倦";
+        petState.mood = "疲惫";
     }
 
     petState.lastUpdated = new Date().toISOString();

@@ -106,7 +106,7 @@ class _PetHomePageState extends State<PetHomePage> {
                         const SizedBox(height: 20),
                         _buildProgressBar("精力 (Energy)", provider.petState['energy']),
                         const SizedBox(height: 10),
-                        _buildProgressBar("饥饿 (Hunger)", provider.petState['hunger']),
+                        _buildProgressBar("饥饿值 (Hunger)", provider.petState['hunger']),
                         const SizedBox(height: 20),
                         Text("Last Updated: ${provider.petState['lastUpdated']}",
                             style: const TextStyle(color: Colors.grey, fontSize: 10)),

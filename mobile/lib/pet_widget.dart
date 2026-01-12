@@ -77,6 +77,7 @@ class _PetWidgetState extends State<PetWidget> with SingleTickerProviderStateMix
     // 1. 根据心情或动作决定显示什么图标/表情
     IconData iconData;
     Color color;
+    bool useImage = false; 
 
     // 优先显示动作中的状态
     switch (_currentAction) {
@@ -98,11 +99,15 @@ class _PetWidgetState extends State<PetWidget> with SingleTickerProviderStateMix
         break;
       default:
         // 如果没有动作，根据后端的心情 mood 显示
-        // (后端返回: "开心", "困倦", "饥饿", "兴奋", "饱饱的")
-        if (widget.mood.contains("开心") || widget.mood.contains("兴奋")) {
+        // (后端返回: "开心", "困倦", "饥饿", "兴奋", "饱饱的", "充满活力")
+        if (widget.mood == "充满活力") {
+          useImage = true;
+          iconData = Icons.pets; 
+          color = Colors.blue;
+        } else if (widget.mood.contains("开心") || widget.mood.contains("兴奋")) {
           iconData = Icons.sentiment_very_satisfied;
           color = Colors.amber;
-        } else if (widget.mood.contains("困倦")) {
+        } else if (widget.mood.contains("困倦") || widget.mood.contains("疲惫")) {
           iconData = Icons.sentiment_dissatisfied;
           color = Colors.blueGrey;
         } else if (widget.mood.contains("饥饿")) {
@@ -118,7 +123,9 @@ class _PetWidgetState extends State<PetWidget> with SingleTickerProviderStateMix
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
-        Widget transformChild = Icon(iconData, size: 120, color: color);
+        Widget transformChild = useImage 
+            ? Image.asset('assets/images/max.png', width: 120, height: 120)
+            : Icon(iconData, size: 120, color: color);
 
         switch (_currentAction) {
           case 'feed':
