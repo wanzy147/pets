@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:audioplayers/audioplayers.dart'; 
 
 // 根据文档，Android模拟器需使用 10.0.2.2 
 const String API_BASE_URL = "http://10.0.2.2:3000"; 
@@ -16,6 +17,9 @@ class PetProvider with ChangeNotifier {
   List<dynamic> _logs = [];
   bool _isLoading = false;
   String? _errorMessage;
+  
+  // 音频播放器
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   // Getters
   Map<String, dynamic> get petState => _petState;
@@ -46,6 +50,9 @@ class PetProvider with ChangeNotifier {
 
   // 乐观更新动作 
   Future<void> performAction(String action) async {
+    // 停止之前的音频播放
+    await _audioPlayer.stop();
+    
     // 1. 保存旧状态用于回滚
     final oldState = Map<String, dynamic>.from(_petState);
     
@@ -56,6 +63,8 @@ class PetProvider with ChangeNotifier {
     } else if (action == 'play') {
       _petState['energy'] = (_petState['energy'] - 15).clamp(0, 100);
       _petState['hunger'] = (_petState['hunger'] + 10).clamp(0, 100);
+      // 播放声音
+      _playSound();
     } else if (action == 'dance') {
       _petState['energy'] = (_petState['energy'] - 10).clamp(0, 100);
       _petState['hunger'] = (_petState['hunger'] + 8).clamp(0, 100);
@@ -100,5 +109,22 @@ class PetProvider with ChangeNotifier {
     } catch (e) {
       print("获取日志失败: $e");
     }
+  }
+  
+  // 播放声音
+  void _playSound() async {
+    try {
+      await _audioPlayer.setVolume(1.0); // 设置音量
+      await _audioPlayer.play(AssetSource('audio/bark.wav'));
+      print("开始播放声音");
+    } catch (e) {
+      print("播放声音失败: $e");
+    }
+  }
+  
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
   }
 }
